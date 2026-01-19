@@ -1,6 +1,6 @@
 using Revise
 using SindbadTutorials
-toggleStackTraceNT()
+toggle_type_abbrev_in_stacktrace()
 # site_index = Base.parse(Int, ENV["SLURM_ARRAY_TASK_ID"])
 
 # site info

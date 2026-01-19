@@ -2,7 +2,7 @@ using Revise
 using SindbadTutorials
 using SindbadTutorials.Dates
 using SindbadTutorials.Plots
-toggleStackTraceNT()
+toggle_type_abbrev_in_stacktrace()
 include("tutorial_helpers.jl")
 # site_index = Base.parse(Int, ENV["SLURM_ARRAY_TASK_ID"])
 

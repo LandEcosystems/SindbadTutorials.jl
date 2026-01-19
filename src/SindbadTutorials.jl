@@ -6,6 +6,6 @@ using Plots
 using Pluto
 using PlutoUI
 
-@reexport using SindbadExperiment
+@reexport using Sindbad
 
 end # module SindbadTutorials

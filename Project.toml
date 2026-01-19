@@ -12,14 +12,7 @@ Pluto = "c3e4b0f8-55cb-11ea-2926-15256bba5781"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 Preferences = "21216c6a-2e73-6563-6e65-726566657250"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
-SindbadExperiment = "bbd31fc6-1b7a-43f2-b792-0273fef35116"
-SindbadML = "eb1d8004-2d42-4eef-b369-ed0645c101e8"
-SindbadVisuals = "49d56b06-c9ff-43e2-9c93-8639e8c3cbdc"
-
-[sources]
-SindbadExperiment = {path = "SINDBAD/lib/SindbadExperiment"}
-SindbadML = {path = "SINDBAD/lib/SindbadML"}
-SindbadVisuals = {path = "SINDBAD/lib/SindbadVisuals"}
+Sindbad = "36c3e672-7dee-4606-99b5-7e5d8d85a313"
 
 [compat]
 BenchmarkTools = "1.6.0"
@@ -30,5 +23,4 @@ Pluto = "0.20.8"
 PlutoUI = "0.7.62"
 Preferences = "1.4.3"
 Reexport = "1.2.2"
-SindbadML = "0.1.0"
-SindbadVisuals = "0.1.0"
+Sindbad = "0.1.0"

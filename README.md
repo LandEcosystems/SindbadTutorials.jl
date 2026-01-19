@@ -6,12 +6,7 @@ A central repository to develop SINDBAD tutorials
 The following command will install the tutorial files and SINDBAD itself.
 
 ```bash
-git clone --recursive https://github.com/EarthyScience/SINDBAD-Tutorials.git
-```
-
-If cloned without the recursive flag, you can run to include SINDBAD as a submodule:
-```bash
-git submodule update --init --recursive
+git clone https://github.com/LandEcosystems/SindbadTutorials.jl
 ```
 
 Note the root directory of where the repo is, for convenience, we'll call it `repo_root` from now on.
