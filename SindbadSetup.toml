@@ -1,0 +1,40 @@
+##############################################
+# SindbadTutorials per-user settings (example)
+#
+# Choose how the Sindbad ecosystem is loaded:
+#   - "run" → registry versions (default)
+#   - "dev" → local checkouts under dev/ via Pkg.develop(path=...)
+#
+# For each package in dev mode, packages are cloned into:
+#   dev/Sindbad.jl
+#   dev/ErrorMetrics.jl
+#   dev/TimeSamplers.jl
+#   dev/OmniTools.jl
+#
+# All packages are developed in the SindbadTutorials environment.
+# Any code changes in dev/* are immediately available (use Revise.jl for auto-reload):
+#
+#   julia> using Revise
+#   julia> using SindbadTutorials
+#   [edit code in dev/Sindbad.jl, etc.]
+#   julia> includet("your_script.jl")  # auto-reloads on changes
+#
+# You can optionally override git URLs to use your own forks:
+##############################################
+
+[mode]
+sindbad = "run"
+# sindbad = "dev"
+
+[Sindbad]
+# git_url = "https://github.com/your-user/Sindbad.jl.git"
+
+[ErrorMetrics]
+# git_url = "https://github.com/your-user/ErrorMetrics.jl.git"
+
+[TimeSamplers]
+# git_url = "https://github.com/your-user/TimeSamplers.jl.git"
+
+[OmniTools]
+# git_url = "https://github.com/your-user/OmniTools.jl.git"
+
