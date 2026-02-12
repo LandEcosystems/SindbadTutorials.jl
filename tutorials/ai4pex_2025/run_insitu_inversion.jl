@@ -3,9 +3,7 @@
 # some of the things that will be using... Julia tools, SINDBAD tools, local codes...
 using Revise
 using SindbadTutorials
-using SindbadTutorials.Dates
-using SindbadTutorials.Plots
-using SindbadTutorials.SindbadVisuals
+using CMAEvolutionStrategy
 toggle_type_abbrev_in_stacktrace()
 include("tutorial_helpers.jl")
 
