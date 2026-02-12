@@ -23,8 +23,8 @@
 ##############################################
 
 [mode]
-sindbad = "run"
-# sindbad = "dev"
+# sindbad = "run"
+sindbad = "dev"
 
 [Sindbad]
 # git_url = "https://github.com/your-user/Sindbad.jl.git"
