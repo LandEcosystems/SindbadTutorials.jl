@@ -71,19 +71,42 @@ function enable_dev_mode(settings)
 
         println("\n📦 $(pkg.name)...")
 
-        # If the path exists, just use it and don't touch the repo
         if isdir(path)
             println("   ⚠️  Already cloned at `$path`")
+            # Check for unstaged changes and prompt for update
+            cd(path) do
+                try
+                    status = read(`git status --porcelain`, String)
+                    if !isempty(status)
+                        println("   ❌ Unstaged changes detected in $path. Please commit or stash them before updating.")
+                        return
+                    end
+                catch e
+                    println("   ❌ Error checking git status: $e")
+                    return
+                end
+                # Prompt user to update
+                print("   ❓ Do you want to update (git pull) $path? [y/N]: ")
+                answer = readline()
+                if lowercase(strip(answer)) in ["y", "yes"]
+                    try
+                        run(`git pull`)
+                        println("   ✅ Updated $path from remote.")
+                    catch e
+                        println("   ❌ Error pulling updates: $e")
+                    end
+                else
+                    println("   ℹ️  Skipping update for $path.")
+                end
+            end
         elseif git_url !== nothing
             # Need to clone the repo into the path
             println("   🔄 Cloning from $git_url...")
-            
             # Create parent directories if needed
             parent_dir = dirname(path)
             if !isempty(parent_dir) && !isdir(parent_dir)
                 mkpath(parent_dir)
             end
-            
             try
                 run(`git clone $git_url $path`)
                 println("   ✅ Successfully cloned")
@@ -137,6 +160,7 @@ function setup_sindbad_dev_dependencies()
         ("ErrorMetrics", "dev/ErrorMetrics.jl"),
         ("TimeSamplers", "dev/TimeSamplers.jl"),
         ("OmniTools",    "dev/OmniTools.jl"),
+        ("SindbadTEM",   "dev/Sindbad.jl/SindbadTEM"),
     ]
 
     # Temporarily activate Sindbad.jl environment

@@ -56,7 +56,7 @@ trainML(hybrid_helpers, info.hybrid.ml_training.method)
 # ================================== change setup to LUE ==========================================
 # same as before, but for a faster / simpler LUE model
 path_experiment_json    = joinpath(@__DIR__,"..","ai4pex_2025","settings_LUE","experiment_hybrid.json");
-path_training_folds     = "";#joinpath(@__DIR__,"..","ai4pex_2025","settings_WROASTED_HB","nfolds_sites_indices.jld2");
+path_training_folds     = "nfolds_sites_indices.jld2";#joinpath(@__DIR__,"..","ai4pex_2025","settings_WROASTED_HB","nfolds_sites_indices.jld2");
 
 replace_info = Dict(
     "forcing.default_forcing.data_path" => path_input,

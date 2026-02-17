@@ -4,6 +4,7 @@ authors = ["dr-ko <skoirala@bgc-jena.mpg.de>"]
 version = "0.1.0"
 
 [deps]
+AWSS3 = "1c724243-ef5b-51ab-93f4-b0a88ac62a95"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 CMAEvolutionStrategy = "8d3b24bd-414e-49e0-94fb-163cc3a3e411"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
@@ -21,6 +22,7 @@ Sindbad = "36c3e672-7dee-4606-99b5-7e5d8d85a313"
 TimeSamplers = "a27efc82-29b7-4223-84cd-12fc64c7a5bb"
 
 [compat]
+AWSS3 = "0.11.4"
 BenchmarkTools = "1.6.0"
 CMAEvolutionStrategy = "0.2.6"
 Dates = "1.11.0"

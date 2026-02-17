@@ -86,7 +86,7 @@ replace_info    = Dict("experiment.basics.time.date_begin" => "$(begin_year)-01-
     "experiment.basics.name" => experiment_name,
     "experiment.basics.time.date_end" => "$(end_year)-12-31",
     "experiment.flags.run_optimization" => run_optimization,
-    "experiment.model_spinup.sequence" => spinup_sequence,
+    # "experiment.model_spinup.sequence" => spinup_sequence,
     "forcing.default_forcing.data_path" => path_input,
     "forcing.subset.site" => [site_index],
     "experiment.model_output.path" => path_output,
