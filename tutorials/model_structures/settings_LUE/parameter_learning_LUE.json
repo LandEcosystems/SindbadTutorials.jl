@@ -21,7 +21,8 @@
     },
     "package": "",
     "fold_path": "./nfolds_sites_indices.jld2",
-    "which_fold": 5
+    "which_fold": 5,
+    "pullback_function": "ZygotePullBack"
   },
   "ml_gradient": {
     "method": "Grad",
@@ -37,12 +38,13 @@
       "β": [0.9, 0.999],
       "ϵ": 1e-8
     },
-    "package": "Optimisers"
+    "package": "Optimisers",
+    "update_method": "OptimisersUpdate"
   },
   "replace_value_for_gradient": 0.0,
   "save_checkpoint": true,
   "covariates": {
-    "path": "../data/CovariatesFLUXNET.zarr",
+    "path": "../data/CovariatesFLUXNET_3.zarr",
     "variables": "all"
   },
 
