@@ -1,0 +1,6 @@
+[deps]
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+SindbadTutorials = "7150cb7e-b54a-4419-adf4-a3c5c2a90a47"
+
+[sources]
+SindbadTutorials = {path = "../.."}
