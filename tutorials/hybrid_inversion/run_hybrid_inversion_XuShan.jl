@@ -6,8 +6,8 @@ Pkg.instantiate()
 
 using Revise
 using SindbadTutorials
-using SindbadML
-using SindbadML.Random
+using Sindbad.MachineLearning
+using Sindbad.MachineLearning.Random
 using SindbadTutorials.Plots
 
 include("tutorial_helpers.jl")

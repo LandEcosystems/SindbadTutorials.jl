@@ -1,12 +1,14 @@
 # ================================== using tools ==================================================
 # some of the things that will be using... Julia tools, SINDBAD tools, local codes...
+import Pkg
+Pkg.activate(".")
+Pkg.instantiate()
 using Revise
 using SindbadTutorials
-# using SindbadML
-# using SindbadML.Random
-# using SindbadTutorials.Plots
-
-include("tutorial_helpers.jl")
+using Sindbad.MachineLearning
+using Sindbad.MachineLearning.Random
+using SindbadTutorials.Plots
+using Flux, PreallocationTools, FiniteDiff, FiniteDifferences, ForwardDiff, Optimisers
 
 ## get the sites to run experiment on
 selected_site_indices = getSiteIndicesForHybrid();
@@ -19,18 +21,17 @@ end
 # ================================== get data / set paths ========================================= 
 # data to be used can be found here: https://nextcloud.bgc-jena.mpg.de/s/w2mbH59W4nF3Tcd
 # organizing the paths of data sources and outputs for this experiment
-path_input_dir      = getSindbadDataDepot(; env_data_depot_var="SINDBAD_DATA_DEPOT", 
-                    local_data_depot=joinpath(@__DIR__,"..","data")); # for convenience, the data file is set within the SINDBAD-Tutorials path; this needs to be changed otherwise.
-path_input          = joinpath("$(path_input_dir)","FLUXNET_v2023_12_1D_REPLACED_Noise003_v1.zarr"); # zarr data source containing all the data for site level runs
+path_input_dir      = getSindbadDataDepot(; env_data_depot_var="SINDBAD_DATA_DEPOT"); # for convenience, the data file is set within the SINDBAD-Tutorials path; this needs to be changed otherwise.
+path_input          = joinpath("$(path_input_dir)", "SindbadTutorialsData", "FLUXNET_v2023_12_1D_REPLACED_Noise003_v1.zarr"); # zarr data source containing all the data for site level runs
 path_observation    = path_input; # observations (synthetic or otherwise) are included in the same file
-path_covariates     = joinpath("$(path_input_dir)","CovariatesFLUXNET.zarr"); # zarr data source containing all the covariates
+path_covariates     = joinpath("$(path_input_dir)", "SindbadTutorialsData","CovariatesFLUXNET.zarr"); # zarr data source containing all the covariates
 path_output         = "";
 
 #= this one takes a hugh amount of time, leave it here for reference
 # ================================== setting up the experiment ====================================
 # experiment is all set up according to a (collection of) json file(s)
-path_experiment_json    = joinpath(@__DIR__,"..","ai4pex_2025","settings_WROASTED_HB","experiment_hybrid.json");
-path_training_folds     = "";#joinpath(@__DIR__,"..","ai4pex_2025","settings_WROASTED_HB","nfolds_sites_indices.jld2");
+path_experiment_json    = joinpath(@__DIR__,"..","experiments","settings_WROASTED_HB","experiment_hybrid.json");
+path_training_folds     = "";#joinpath(@__DIR__,"..","experiments","settings_WROASTED_HB","nfolds_sites_indices.jld2");
 
 replace_info = Dict(
     "forcing.default_forcing.data_path" => path_input,
@@ -55,8 +56,8 @@ trainML(hybrid_helpers, info.hybrid.ml_training.method)
 
 # ================================== change setup to LUE ==========================================
 # same as before, but for a faster / simpler LUE model
-path_experiment_json    = joinpath(@__DIR__,"..","ai4pex_2025","settings_LUE","experiment_hybrid.json");
-path_training_folds     = "nfolds_sites_indices.jld2";#joinpath(@__DIR__,"..","ai4pex_2025","settings_WROASTED_HB","nfolds_sites_indices.jld2");
+path_experiment_json    = joinpath(@__DIR__,"..","experiments","settings_LUE","experiment_hybrid.json");
+path_training_folds     = "";#joinpath(@__DIR__,"..","experiments","settings_LUE","nfolds_sites_indices.jld2");
 
 replace_info = Dict(
     "forcing.default_forcing.data_path" => path_input,
@@ -78,6 +79,7 @@ hybrid_helpers  = prepHybrid(forcing, observations, info, info.hybrid.ml_trainin
 # train the model
 trainML(hybrid_helpers, info.hybrid.ml_training.method)
 
+a
 ## check the docs for output at: http://sindbad-mdi.org/pages/develop/hybrid_modeling.html and http://sindbad-mdi.org/pages/develop/sindbad_outputs.html
 # ================================== posterior run diagnostics =====================================
 # select a site

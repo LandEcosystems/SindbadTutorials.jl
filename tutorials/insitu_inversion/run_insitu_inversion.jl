@@ -12,7 +12,6 @@ using SindbadTutorials.Plots
 using SindbadTutorials.Sindbad.Visualization
 using CMAEvolutionStrategy
 toggle_type_abbrev_in_stacktrace()
-include("tutorial_helpers.jl")
 
 # ================================== get data / set paths ========================================= 
 # data to be used can be found here: https://nextcloud.bgc-jena.mpg.de/s/w2mbH59W4nF3Tcd
@@ -29,7 +28,7 @@ domain, y_dist  = getSiteInfo(site_index);
 
 # ================================== setting up the experiment ====================================
 # experiment is all set up according to a (collection of) json file(s)
-experiment_json     = joinpath(@__DIR__,"settings_WROASTED_HB","experiment_insitu.json");
+experiment_json     = joinpath(@__DIR__,"../experiments/settings_WROASTED_HB","experiment_insitu.json");
 experiment_name     = "WROASTED_inversion_CMAES";
 begin_year          = 1979;
 end_year            = 2017;
@@ -37,7 +36,7 @@ run_optimization    = true;
 isfile(experiment_json) ? nothing : println("Hmmm... does not exist : $(experiment_json)");
 
 # setting up the model spinup sequence : can change according to the site...
-spinup_sequence = getSpinupSequenceSite(y_dist, begin_year);
+# spinup_sequence = getSpinupSequenceSite(y_dist, begin_year);
 
 # default setting in experiment_json will be replaced by the "replace_info"
 replace_info = Dict("experiment.basics.time.date_begin" => "$(begin_year)-01-01",
@@ -45,7 +44,7 @@ replace_info = Dict("experiment.basics.time.date_begin" => "$(begin_year)-01-01"
     "experiment.basics.name" => experiment_name,
     "experiment.basics.time.date_end" => "$(end_year)-12-31",
     "experiment.flags.run_optimization" => run_optimization,
-    "experiment.model_spinup.sequence" => spinup_sequence,
+    # "experiment.model_spinup.sequence" => spinup_sequence,
     "forcing.default_forcing.data_path" => path_input,
     "forcing.subset.site" => [site_index],
     "experiment.model_output.path" => path_output,
