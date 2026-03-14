@@ -1,6 +1,6 @@
 # Task 02: Build a hybrid model for GPP sensitivity to air temperature
 
-Author: Xu Shan, Sujan Koirala, and Nuno Carvalhais
+Author: Xu Shan, Reda, ElGhawi, Sujan Koirala, and Nuno Carvalhais
 
 In this tutorial, we will build a hybrid model to learn the sensitivity of GPP to air temperature, and evaluate its performance in predicting GPP across different locations and time scales using a global open dataset. We will explore different ML architectures (e.g., feedforward neural networks, recurrent neural networks) to improve the generalizability of the model.
 
