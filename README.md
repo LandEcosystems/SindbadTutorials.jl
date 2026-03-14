@@ -2,6 +2,8 @@
 
 Author: Xu Shan, Sujan Koirala, and Nuno Carvalhais
 
+This repo is a forked repo from [SindbadTutorials.jl](https://github.com/LandEcosystems/SindbadTutorials.jl) for the Challenges 13 and 17 of the AI4PEX winter school at Athens in 2026. The original repo is developed by the team of Model-Data Integration Group at Max Planck Institute of Biogeochemistry. The tutorials are designed to be run in a `terminal` or in a `Colab` notebook, and they will guide you through the process of building hybrid models to learn global parameterizations of ecosystem processes, particularly focusing on carbon and water fluxes. The tutorials will also support the Challenge 17, by exploring different ML architectures for biogeochemical processes (for example, GPP sensitivity to air temperature) to improve the generalizability of the hybrid models across different locations and time scales.
+
 ## Description:
 Land carbon and water fluxes shape the feedback between terrestrial ecosystems and climate, yet traditional land models remain hampered by structural error and equifinality. Hybrid models—embedding machine learning (ML) modules inside mechanistic frameworks—address several of these gaps by combining physical consistency with data driven flexibility. So far, pioneering work linking process knowledge and ML has already demonstrated superior realism across scales, while underlining the need for richer observations to resolve coupled C–H₂O dynamics. This is demonstrated by the limitation in learning the spatial and temporal controls of parameters that modulate the responses of ecosystems to weather and climate variability.The challenge lies in the need for intensive and long-term observations that underpin robust and comprehensive representations of ecosystem functioning. Although hundreds of locations with such observations exist worldwide, we still observe significant limitations in parameter generalization, consequently limiting our ability to predict ecosystem function. The challenge here is to overcome the previous generalizability in predicting carbon and water fluxes using a hybrid modelling approach. Based on a global open dataset and the SINDBAD hybrid modelling framework, the project will be open to a wide range of approaches towards generalization, from different ML architectures to the ingestion of foundation models.
 
@@ -20,8 +22,8 @@ The main objectives of this challenge are to:
 4. Identify the key factors and controls that influence the generalization of parameters in hybrid models, and develop strategies to overcome limitations in parameter generalization.
 
 ## Two valid tasks
-1. Develop a hybrid model that learns the parameters of a light use efficiency model of GPP, and evaluate its performance in predicting GPP across different locations and time scales using a global open dataset. Explore different combinitions of static covariates (e.g., plant functional types, soil properties) to improve the generalizability of the model. Examples could be found in [Task01_LUE_inversion_XuShan.ipynb](https://colab.research.google.com/drive/1swNUrN8pFUErDJXaNIaeJ8RtF454j9ny#scrollTo=39231d4c).
-2. Develop a hybrid model that learns the sensitivity of GPP to air temperature, and evaluate its performance in predicting GPP across different locations and time scales using a global open dataset. Explore different ML architectures (e.g., feedforward neural networks, recurrent neural networks) to improve the generalizability of the model.
+1. Develop a hybrid model that learns the parameters of a light use efficiency model of GPP, and evaluate its performance in predicting GPP across different locations and time scales using a global open dataset. Explore different combinitions of static covariates (e.g., plant functional types, soil properties) to improve the generalizability of the model. Examples could be found in and [Task_Parameter.ipynb](https://colab.research.google.com/github/AI4PEX/SindbadTutorials.jl/blob/ai4pex_winter_school_clean/tutorials/hybrid_inversion_Parameter/Task_Parameter.ipynb).
+2. Develop a hybrid model that learns the sensitivity of GPP to air temperature, and evaluate its performance in predicting GPP across different locations and time scales using a global open dataset. Explore different ML architectures (e.g., feedforward neural networks, recurrent neural networks) to improve the generalizability of the model. Examples could be found in [Step02_implement_ml_model.ipynb](https://colab.research.google.com/github/AI4PEX/SindbadTutorials.jl/blob/ai4pex_winter_school_clean/tutorials/hybrid_inversion_Process/Step02_implement_ml_model.ipynb).
 
 ## Getting the repo
 
@@ -32,17 +34,12 @@ drive.mount('/content/drive')
 ```
 Then, run the following command in the terminal to clone the repo:
 
-```bash
-cd /content/drive/MyDrive
-git clone https://github.com/WinterSchool2026/ch13-global-ecosystem-hybrid-parameterization.git
-```
-
 or 
 ```bash
-git clone https://github.com/LandEcosystems/SindbadTutorials.jl
+git clone https://github.com/LandEcosystems/SindbadTutorials.jl.git
 ```
 
-Note the root directory of where the repo is (```cd ch13-global-ecosystem-hybrid-parameterization```), for convenience, we'll call it `repo_root` from now on.
+Note the root directory of where the repo is (```cd SindbadTutorials.jl```), for convenience, we'll call it `repo_root` from now on.
 
 The tutorial files are stored in the `tutorials` subdirectory, and organised by topic or summer school or other event. The current tutorials are:
 - hybrid_inversion
@@ -100,4 +97,4 @@ In VS code, set the `which_tutorial` as the active project by clicking on the `J
 
 # Tutorials
 
-The tutorials are located under `./tutorials/hybrid_inversion_Task*`. Follow the instructions in the `.jl` scripts or `.ipynb` notebooks.
+The tutorials are located under `./tutorials/hybrid_inversion_*Task*`. Follow the instructions in the `.md` files, `.jl` scripts or `.ipynb` notebooks.
