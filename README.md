@@ -96,7 +96,7 @@ Tutorials live under `tutorials/` and are organized by topic. Configurations (ex
 
 | Tutorial | Description |
 |----------|-------------|
-| **hybrid_parameter_learning** | Learn WROASTED/LUE model parameters from synthetic FLUXNET data with ML. Covers running the baseline, changing covariates (`Step02_load_covariates.jl`), and using PCA (`Step03_use_pca.jl`). Entry: `Task_Parameter.md` and `run_hybrid_inversion.jl`. |
+| **hybrid_parameter_learning** | Learn WROASTED/LUE model parameters from synthetic FLUXNET data with ML. Covers running the baseline, changing covariates (`Step02_load_covariates.jl`), and using PCA (`Step03_use_pca.jl`). Entry: `Task_Parameter.md`. |
 | **hybrid_process_learning** | Build a hybrid model for GPP sensitivity to air temperature: add a new model/approach in Sindbad, implement an external ML model, and link it (direct call or lookup table). Entry: `Task_Process.md`, `Step01_add_model.jl`, `Step02_implement_ml_model.jl`, `Step03_link_ml_model.jl` / `Step03_link_ml_model_lut.jl`. |
 | **insitu_inversion** | Site-level inversion (e.g. single FLUXNET site) with CMA-ES optimization. Run `run_insitu_inversion.jl` or the matching notebook; experiment is defined in `setups/WROASTED_HB/experiment_insitu.json`. |
 | **global_inversion** | Global-scale parameter inversion with optional PFT filtering and CMA-ES. Run `run_global_inversion.jl`; uses experiment and optimization configs from `setups/`. |

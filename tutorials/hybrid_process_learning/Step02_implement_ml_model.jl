@@ -4,6 +4,7 @@ using Zarr
 using JLD2
 using ForwardDiff
 using CairoMakie
+using CairoMakie: scatter!
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 data_path = "https://s3.bgc-jena.mpg.de:9000/sindbad/FLUXNET_v2023_12_1D_REPLACED_Noise003_v1.zarr"

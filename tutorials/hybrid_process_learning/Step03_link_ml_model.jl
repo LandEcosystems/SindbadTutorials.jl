@@ -104,19 +104,20 @@ end
 path_experiment_json = joinpath(@__DIR__, "..", "setups", "WROASTED_HB", "experiment_hybrid.json")
 path_setups = joinpath(@__DIR__, "..", "setups", "WROASTED_HB")
 
-function build_replace_info(model_structure_file, optimization_file)
+function build_replace_info(model_structure_file, optimization_file, approach)
     return Dict(
         "forcing.subset.site" => selected_site_indices,
         "experiment.basics.config_files.model_structure" => joinpath(path_setups, model_structure_file),
         "experiment.basics.config_files.optimization" => joinpath(path_setups, optimization_file),
+        "model_structure.models.gppAirT.approach" => approach,
         "optimization.optimization_cost_threaded" => false,
         "optimization.optimization_parameter_scaling" => nothing,
         "hybrid.ml_training.fold_path" => nothing,
     )
 end
 
-function load_experiment(model_structure_file, optimization_file)
-    replace_info = build_replace_info(model_structure_file, optimization_file)
+function load_experiment(model_structure_file, optimization_file, approach)
+    replace_info = build_replace_info(model_structure_file, optimization_file, approach)
     info = getExperimentInfo(path_experiment_json; replace_info=deepcopy(replace_info))
     forcing = getForcing(info)
     observations = getObservation(info, forcing.helpers)
@@ -171,9 +172,9 @@ end
 
 function compare_model_structures(site_index=1)
     info_external, forcing_external, observations_external =
-        load_experiment("model_structure_externalNN.json", "optimization_externalNN.json")
+        load_experiment("model_structure_externalNN.json", "optimization_externalNN.json", "externalNN")
     info_standard, forcing_standard, observations_standard =
-        load_experiment("model_structure.json", "optimization.json")
+        load_experiment("model_structure.json", "optimization.json", "CASA")
 
     output_external, _, _ = run_model_param_sensitivity(
         info_external,

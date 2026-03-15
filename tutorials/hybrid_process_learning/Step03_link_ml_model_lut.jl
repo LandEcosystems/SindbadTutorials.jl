@@ -2,12 +2,12 @@ using Revise
 using Flux
 using JLD2
 using SindbadTutorials
-using SindbadTutorials.SindbadTEM          # brings gppAirT_externalNN into scope (via @reexport)
+using SindbadTutorials.SindbadTEM          # brings gppAirT_externalNN_LUT into scope (via @reexport)
 import SindbadTutorials.SindbadTEM.Processes: define, precompute, compute  # import allows adding new methods
 
-# Extend define for gppAirT_externalNN
+# Extend define for gppAirT_externalNN_LUT
 # define runs once to fix the type/shape of all land NamedTuple fields.
-function define(params::gppAirT_externalNN, forcing, land, helpers)
+function define(params::gppAirT_externalNN_LUT, forcing, land, helpers)
     @unpack_nt o_one ⇐ land.constants          # o_one = 1.0 scalar
     gpp_f_airT      = o_one                    # initialise to 1 (no stress)
     tair_range_raw  = zeros(Float32, 200)      # placeholder lookup axis
@@ -18,9 +18,9 @@ function define(params::gppAirT_externalNN, forcing, land, helpers)
     return land
 end
 
-# Extend precompute for gppAirT_externalNN
+# Extend precompute for gppAirT_externalNN_LUT
 # precompute runs once before the time loop — ideal for file I/O.
-function precompute(params::gppAirT_externalNN, forcing, land, helpers)
+function precompute(params::gppAirT_externalNN_LUT, forcing, land, helpers)
     checkpoint      = load(joinpath(@__DIR__, "../../gpp_model.jld2"))
     tair_range_raw  = Float32.(checkpoint["tair_range_raw"])  # Tair sweep, length=200, °C
     stress_function = Float32.(checkpoint["stress_function"])  # stress ∈ [0,1], length=200
@@ -29,12 +29,12 @@ function precompute(params::gppAirT_externalNN, forcing, land, helpers)
     return land
 end
 
-# Extend compute for gppAirT_externalNN
+# Extend compute for gppAirT_externalNN_LUT
 # compute runs every timestep.
 # Unpack the lookup tables from land.gppAirT (set in precompute),
 # linearly interpolate at the current daytime air temperature,
 # clamp to [0,1], and pack the result as gpp_f_airT.
-function compute(params::gppAirT_externalNN, forcing, land, helpers)
+function compute(params::gppAirT_externalNN_LUT, forcing, land, helpers)
     @unpack_nt f_airT_day    ⇐ forcing
     @unpack_nt tair_range_raw  ⇐ land.gppAirT
     @unpack_nt stress_function ⇐ land.gppAirT
@@ -83,6 +83,7 @@ replace_info = Dict(
     "forcing.subset.site" => selected_site_indices,
     "experiment.basics.config_files.model_structure" => joinpath(@__DIR__,"..","setups","WROASTED_HB","model_structure_externalNN.json"),
     "experiment.basics.config_files.optimization" => joinpath(@__DIR__,"..","setups","WROASTED_HB","optimization_externalNN.json"),
+    "model_structure.models.gppAirT.approach" => "externalNN_LUT",
     "optimization.optimization_cost_threaded" => false,
     "optimization.optimization_parameter_scaling" => nothing,
     "hybrid.ml_training.fold_path" => nothing,
