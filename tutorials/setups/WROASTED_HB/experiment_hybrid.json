@@ -83,6 +83,7 @@
       "fluxes.transpiration": null,
       "diagnostics.gpp_climate_stressors": 4,
       "diagnostics.gpp_f_soilW": null,
+      "diagnostics.gpp_f_airT": null,
       "pools.cEco": "d_cEco",
       "pools.groundW": 1,
       "pools.snowW": 1,

@@ -89,6 +89,8 @@ function compute(params::gppAirT_externalNN, forcing, land, helpers)
     sens = abs(ForwardDiff.derivative(gpp_vs_tair, tair_n))
     sens_norm = (sens - abs_sens_lo) / (abs_sens_hi - abs_sens_lo)
     gpp_f_airT = clamp(sens_norm, z_zero, o_one)
+    @info "using gpp_f_airT from external NN"
+
     @pack_nt gpp_f_airT ⇒ land.diagnostics
     return land
 end
@@ -169,12 +171,13 @@ function extract_site_series(output, var_name::Symbol)
     end
     return Array(data)
 end
+site_index = 1;
 
 function compare_model_structures(site_index=1)
     info_external, forcing_external, observations_external =
-        load_experiment("model_structure_externalNN.json", "optimization_externalNN.json", "externalNN")
+        load_experiment("model_structure_externalNN.json", "optimization_externalNN.json", "externalNN");
     info_standard, forcing_standard, observations_standard =
-        load_experiment("model_structure.json", "optimization.json", "CASA")
+        load_experiment("model_structure.json", "optimization.json", "CASA");
 
     output_external, _, _ = run_model_param_sensitivity(
         info_external,
