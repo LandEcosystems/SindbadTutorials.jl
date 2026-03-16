@@ -21,8 +21,10 @@ path_output         = "";
 # this one takes a hugh amount of time, leave it here for reference
 # ================================== setting up the experiment ====================================
 # experiment is all set up according to a (collection of) json file(s)
-path_experiment_json    = joinpath(@__DIR__,"..","setups","WROASTED_HB","experiment_hybrid.json");
-path_training_folds     = "";#joinpath(@__DIR__,"..","setups","WROASTED_HB","nfolds_sites_indices.jld2");
+# model_setup = "WROASTED_HB";
+model_setup = "LUE";
+path_experiment_json    = joinpath(@__DIR__,"..","setups",model_setup,"experiment_hybrid.json");
+path_training_folds     = "";#joinpath(@__DIR__,"..","setups",model_setup,"nfolds_sites_indices.jld2");
 
 replace_info = Dict(
     "forcing.subset.site" => selected_site_indices,
@@ -41,29 +43,6 @@ hybrid_helpers  = prepHybrid(forcing, observations, info, info.hybrid.ml_trainin
 # ================================== train the hybrid model =======================================
 trainML(hybrid_helpers, info.hybrid.ml_training.method)
 #
-
-# ================================== change setup to LUE ==========================================
-# same as before, but for a faster / simpler LUE model
-path_experiment_json    = joinpath(@__DIR__,"..","setups","LUE","experiment_hybrid.json");
-path_training_folds     = "";#joinpath(@__DIR__,"..","setups","LUE","nfolds_sites_indices.jld2");
-
-replace_info = Dict(
-    "forcing.subset.site" => selected_site_indices,
-    "optimization.optimization_cost_threaded" => false,
-    "optimization.optimization_parameter_scaling" => nothing,
-    "hybrid.ml_training.fold_path" => nothing,
-);
-
-# generate the info and other helpers
-info            = getExperimentInfo(path_experiment_json; replace_info=deepcopy(replace_info));
-forcing         = getForcing(info);
-observations    = getObservation(info, forcing.helpers);
-sites_forcing   = forcing.data[1].site;
-hybrid_helpers  = prepHybrid(forcing, observations, info, info.hybrid.ml_training.method);
-
-# train the model
-trainML(hybrid_helpers, info.hybrid.ml_training.method)
-
 
 # hybrid_helpers_cp = deepcopy(hybrid_helpers);
 # using JLD2

@@ -147,8 +147,9 @@ path_output         = "";
 # this one takes a hugh amount of time, leave it here for reference
 # ================================== setting up the experiment ====================================
 # experiment is all set up according to a (collection of) json file(s)
-path_experiment_json    = joinpath(@__DIR__,"..","setups","LUE","experiment_hybrid.json");
-path_training_folds     = "";#joinpath(@__DIR__,"..","setups","WROASTED_HB","nfolds_sites_indices.jld2");
+model_setup = "LUE";
+path_experiment_json    = joinpath(@__DIR__,"..","setups",model_setup,"experiment_hybrid.json");
+path_training_folds     = "";#joinpath(@__DIR__,"..","setups",model_setup,"nfolds_sites_indices.jld2");
 
 replace_info = Dict(
     "forcing.subset.site" => selected_site_indices,
