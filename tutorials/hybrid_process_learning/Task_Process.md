@@ -4,9 +4,15 @@ Author: Xu Shan, Reda ElGhawi, Sujan Koirala, and Nuno Carvalhais
 
 In this tutorial, we will build a hybrid model to learn the sensitivity of GPP to air temperature, and evaluate its performance in predicting GPP across different locations and time scales using a global open dataset. We will explore different ML architectures (e.g., feedforward neural networks, recurrent neural networks) to improve the generalizability of the model.
 
-This script is written in the form of md file because of some of the commands cannot be run in the REPL, but need to be run in the terminal. You can copy and paste the commands into the terminal, or run the script directly in the terminal with `julia Step01_add_model.jl`.
+This script is written in the form of md file because of some of the commands cannot be run in the REPL, but need to be run in the terminal. You can copy and paste the commands into the terminal, or run the script directly in the terminal with `julia Step02_add_sindbad_model.jl`.
 
-## Step 01: Add a new model in Sindbad
+## Step 01: Implement the ML model in an outer script
+In this step, we will implement the ML model in an outer script, and link it to the Sindbad model in the step after that. We will use a simple feedforward neural network as an example, but you can explore different ML architectures (e.g., recurrent neural networks) to improve the generalizability of the model.
+Please refer to the `Step01_implement_ml_model.jl` script for the implementation of the ML model. The script is written in a way that it can be run in the terminal, and it will save the trained ML model as a file that can be loaded in the Sindbad model in the next step. Alternatively, you can also refer to the notebook `Step01_implement_ml_model.ipynb` for the implementation of the ML model in a Jupyter notebook. The notebook is more interactive and allows you to visualize the training process and the results, but it may not be as convenient for running the script in the terminal. You can choose either way to implement the ML model, depending on your preference and needs.
+
+---
+
+## Step 02: Add a new model in Sindbad
 In this step, we will add a new model in Sindbad to learn the sensitivity of GPP to air temperature. We will use an external ML model to learn the relationship between GPP and air temperature. The purpose here is to just add the new model ```type``` and the corresponding ```approach``` in Sindbad, without actually implementing the ML model. We will implement the ML model in the next step in an outer script, and link it to the Sindbad model in the step after that.
 
 ```julia
@@ -17,15 +23,24 @@ Pkg.instantiate()
 using Revise
 using SindbadTutorials
 generateSindbadApproach(:gppAirT, 
-                        "Effect of temperature on GPP: 1 indicates no temperature stress, 0 indicates complete stress.", 
-                        :externalNN, 
-                        "Use external ML model", 
-                        1)
+                               "Effect of temperature on GPP: 1 indicates no temperature stress, 0 indicates complete stress.", 
+                               :externalNN, 
+                               "Use continuous external ML model", 
+                               1,
+                               methods=(),
+                               force_over_write=:approach)
+
+
+generateSindbadApproach(:gppAirT, 
+                               "Effect of temperature on GPP: 1 indicates no temperature stress, 0 indicates complete stress.", 
+                               :externalNN_LUT, 
+                               "Use lookup table from external ML model", 
+                               1,
+                               methods=(),
+                               force_over_write=:approach)
 ```
----
-## Step 02: Implement the ML model in an outer script
-In this step, we will implement the ML model in an outer script, and link it to the Sindbad model in the step after that. We will use a simple feedforward neural network as an example, but you can explore different ML architectures (e.g., recurrent neural networks) to improve the generalizability of the model.
-Please refer to the `Step02_implement_ml_model.jl` script for the implementation of the ML model. The script is written in a way that it can be run in the terminal, and it will save the trained ML model as a file that can be loaded in the Sindbad model in the next step. Alternatively, you can also refer to the notebook `Step02_implement_ml_model.ipynb` for the implementation of the ML model in a Jupyter notebook. The notebook is more interactive and allows you to visualize the training process and the results, but it may not be as convenient for running the script in the terminal. You can choose either way to implement the ML model, depending on your preference and needs.
+
+If the newly added models are not loaded into the package, you may need to restart the Julia session/REPL.
 
 ---
 

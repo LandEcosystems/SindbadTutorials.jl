@@ -95,31 +95,22 @@ function compute(params::gppAirT_externalNN, forcing, land, helpers)
     return land
 end
 
-# --- Experiment setup ---
-selected_site_indices = getSiteIndicesForHybrid()
-do_random = 0
-if do_random > 0
-    Random.seed!(1234)
-    selected_site_indices = first(shuffle(selected_site_indices), do_random)
-end
-
-path_experiment_json = joinpath(@__DIR__, "..", "setups", "WROASTED_HB", "experiment_hybrid.json")
-path_setups = joinpath(@__DIR__, "..", "setups", "WROASTED_HB")
-
-function build_replace_info(model_structure_file, optimization_file, approach)
-    return Dict(
+function build_replace_info(optimization_file, approach)
+    replace_info = Dict(
         "forcing.subset.site" => selected_site_indices,
-        "experiment.basics.config_files.model_structure" => joinpath(path_setups, model_structure_file),
-        "experiment.basics.config_files.optimization" => joinpath(path_setups, optimization_file),
         "model_structure.models.gppAirT.approach" => approach,
         "optimization.optimization_cost_threaded" => false,
         "optimization.optimization_parameter_scaling" => nothing,
         "hybrid.ml_training.fold_path" => nothing,
     )
+    if !isnothing(optimization_file)
+        replace_info["experiment.basics.config_files.optimization"] = joinpath(path_setups, optimization_file)
+    end
+    return replace_info
 end
 
-function load_experiment(model_structure_file, optimization_file, approach)
-    replace_info = build_replace_info(model_structure_file, optimization_file, approach)
+function load_experiment(optimization_file, approach)
+    replace_info = build_replace_info(optimization_file, approach)
     info = getExperimentInfo(path_experiment_json; replace_info=deepcopy(replace_info))
     forcing = getForcing(info)
     observations = getObservation(info, forcing.helpers)
@@ -171,13 +162,12 @@ function extract_site_series(output, var_name::Symbol)
     end
     return Array(data)
 end
-site_index = 1;
 
 function compare_model_structures(site_index=1)
     info_external, forcing_external, observations_external =
-        load_experiment("model_structure_externalNN.json", "optimization_externalNN.json", "externalNN");
+        load_experiment("optimization_externalNN.json", "externalNN");
     info_standard, forcing_standard, observations_standard =
-        load_experiment("model_structure.json", "optimization.json", "CASA");
+        load_experiment(nothing, "CASA"); # use the same optimization file as written in experiment [json]
 
     output_external, _, _ = run_model_param_sensitivity(
         info_external,
@@ -247,6 +237,24 @@ function compare_model_structures(site_index=1)
         p_gpp_f_airT,
     )
 end
+
+
+# --- Experiment setup ---
+selected_site_indices = getSiteIndicesForHybrid()
+do_random = 0
+if do_random > 0
+    Random.seed!(1234)
+    selected_site_indices = first(shuffle(selected_site_indices), do_random)
+end
+
+# choose on of the model setups
+model_setup = "LUE_NN";
+# model_setup = "WROASTED_HB";
+
+# set path to experiment json file
+
+path_experiment_json = joinpath(@__DIR__, "..", "setups", model_setup, "experiment_hybrid.json")
+path_setups = joinpath(@__DIR__, "..", "setups", model_setup)
 
 site_index = 1;
 comparison = compare_model_structures(site_index);

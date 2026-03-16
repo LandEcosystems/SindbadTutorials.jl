@@ -49,7 +49,7 @@ function compute(params::gppAirT_externalNN_LUT, forcing, land, helpers)
         α = (t - tair_range_raw[i-1]) / (tair_range_raw[i] - tair_range_raw[i-1])
         clamp(stress_function[i-1] * (1f0 - α) + stress_function[i] * α, z_zero, o_one)
     end
-    @info "using gpp_f_airT from external NN"
+    @info "using gpp_f_airT from external NN Lookup Table"
     @pack_nt gpp_f_airT ⇒ land.diagnostics
     return land
 end
@@ -76,13 +76,17 @@ path_output         = "";
 # this one takes a hugh amount of time, leave it here for reference
 # ================================== setting up the experiment ====================================
 # experiment is all set up according to a (collection of) json file(s)
-path_experiment_json    = joinpath(@__DIR__,"..","setups","WROASTED_HB","experiment_hybrid.json");
-path_training_folds     = "";#joinpath(@__DIR__,"..","setups","WROASTED_HB","nfolds_sites_indices.jld2");
+# choose on of the model setups
+model_setup = "LUE_NN";
+model_setup = "WROASTED_HB";
+
+# set path to experiment json file
+path_experiment_json    = joinpath(@__DIR__,"..","setups",model_setup,"experiment_hybrid.json");
+path_training_folds     = "";#joinpath(@__DIR__,"..","setups",model_setup,"nfolds_sites_indices.jld2");
 
 replace_info = Dict(
     "forcing.subset.site" => selected_site_indices,
-    "experiment.basics.config_files.model_structure" => joinpath(@__DIR__,"..","setups","WROASTED_HB","model_structure_externalNN.json"),
-    "experiment.basics.config_files.optimization" => joinpath(@__DIR__,"..","setups","WROASTED_HB","optimization_externalNN.json"),
+    "experiment.basics.config_files.optimization" => joinpath(@__DIR__,"..","setups",model_setup,"optimization_externalNN.json"),
     "model_structure.models.gppAirT.approach" => "externalNN_LUT",
     "optimization.optimization_cost_threaded" => false,
     "optimization.optimization_parameter_scaling" => nothing,
