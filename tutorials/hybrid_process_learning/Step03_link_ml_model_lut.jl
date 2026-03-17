@@ -4,6 +4,10 @@ using JLD2
 using SindbadTutorials
 using SindbadTutorials.SindbadTEM          # brings gppAirT_externalNN_LUT into scope (via @reexport)
 import SindbadTutorials.SindbadTEM.Processes: define, precompute, compute  # import allows adding new methods
+using Sindbad.MachineLearning
+using Sindbad.MachineLearning.Random
+using SindbadTutorials.Plots
+using Flux, PreallocationTools, FiniteDiff, FiniteDifferences, ForwardDiff, Optimisers
 
 # Extend define for gppAirT_externalNN_LUT
 # define runs once to fix the type/shape of all land NamedTuple fields.
@@ -55,12 +59,6 @@ function compute(params::gppAirT_externalNN_LUT, forcing, land, helpers)
 end
 
 ## test the compute function
-using Revise
-using SindbadTutorials
-using Sindbad.MachineLearning
-using Sindbad.MachineLearning.Random
-using SindbadTutorials.Plots
-using Flux, PreallocationTools, FiniteDiff, FiniteDifferences, ForwardDiff, Optimisers
 
 ## get the sites to run experiment on
 selected_site_indices = getSiteIndicesForHybrid();
@@ -78,7 +76,7 @@ path_output         = "";
 # experiment is all set up according to a (collection of) json file(s)
 # choose on of the model setups
 model_setup = "LUE_NN";
-model_setup = "WROASTED_HB";
+# model_setup = "WROASTED_HB";
 
 # set path to experiment json file
 path_experiment_json    = joinpath(@__DIR__,"..","setups",model_setup,"experiment_hybrid.json");
@@ -148,3 +146,42 @@ site_index = 1
 output_default_site, _, _ = run_model_param(info, forcing, observations, 
                                             site_index, 
                                             info.optimization.parameter_table.default);
+
+
+
+
+# do plots, compute some simple statistics e.g. NSE
+def_dat = output_default_site;
+loc_observation = [Array(o[:, site_index]) for o in observations.data];
+costOpt = prepCostOptions(loc_observation, info.optimization.cost_options);
+default(titlefont=(20, "times"), legendfontsize=18, tickfont=(15, :blue))
+foreach(costOpt) do var_row
+    v = var_row.variable
+    println("plot obs::", v)
+    v = (var_row.mod_field, var_row.mod_subfield)
+    vinfo = getVariableInfo(v, info.experiment.basics.temporal_resolution)
+    v = vinfo["standard_name"]
+    lossMetric = var_row.cost_metric
+    loss_name = nameof(typeof(lossMetric))
+    if loss_name in (:NNSEInv, :NSEInv)
+        lossMetric = NSE()
+    end
+    (obs_var, obs_σ, def_var) = getData(def_dat, loc_observation, var_row)
+    obs_var_TMP = obs_var[:, 1, 1, 1]
+    non_nan_index = findall(x -> !isnan(x), obs_var_TMP)
+    if length(non_nan_index) < 2
+        tspan = 1:length(obs_var_TMP)
+    else
+        tspan = first(non_nan_index):last(non_nan_index)
+    end
+    obs_σ = obs_σ[tspan]
+    obs_var = obs_var[tspan, 1, 1, 1]
+    def_var = def_var[tspan, 1, 1, 1]
+
+    xdata = [info.helpers.dates.range[tspan]...]
+    obs_var_n, obs_σ_n, def_var_n = getDataWithoutNaN(obs_var, obs_σ, def_var)
+    metr_def = metric(obs_var_n, obs_σ_n, def_var_n, lossMetric)
+    plot(xdata, obs_var; label="obs", seriestype=:scatter, mc=:black, ms=4, lw=0, ma=0.65, left_margin=1Plots.cm)
+    plot!(xdata, def_var, color=:steelblue2, lw=1.5, ls=:dash, left_margin=1Plots.cm, legend=:outerbottom, legendcolumns=3, label="def ($(round(metr_def, digits=2)))", size=(2000, 1000), title="$(vinfo["long_name"]) ($(vinfo["units"])) -> $(nameof(typeof(lossMetric)))")
+    savefig(joinpath(info.output.dirs.figure, "$(model_setup)_$(v).png"))
+end
