@@ -156,7 +156,7 @@ path_experiment_json    = joinpath(@__DIR__,"..","setups","LUE","experiment_hybr
 path_training_folds     = "";#joinpath(@__DIR__,"..","setups","WROASTED_HB","nfolds_sites_indices.jld2");
 
 replace_info = Dict(
-    "forcing.subset.site" => selected_site_indices,
+    "forcing.subset.site" => getSiteNames(selected_site_indices),
     "optimization.optimization_cost_threaded" => false,
     "optimization.optimization_parameter_scaling" => nothing,
     "hybrid.ml_training.fold_path" => nothing,

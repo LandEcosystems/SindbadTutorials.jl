@@ -97,7 +97,7 @@ end
 
 function build_replace_info(optimization_file, approach)
     replace_info = Dict(
-        "forcing.subset.site" => selected_site_indices,
+        "forcing.subset.site" => getSiteNames(selected_site_indices),
         "model_structure.models.gppAirT.approach" => approach,
         "optimization.optimization_cost_threaded" => false,
         "optimization.optimization_parameter_scaling" => nothing,
@@ -115,40 +115,6 @@ function load_experiment(optimization_file, approach)
     forcing = getForcing(info)
     observations = getObservation(info, forcing.helpers)
     return info, forcing, observations
-end
-
-# --- Run the model for the site with the default parameters ---
-function run_model_param_sensitivity(info, forcing, observations, site_index, loc_params)
-    run_helpers = prepTEM(info.models.forward, forcing, observations, info)
-    params = loc_params
-    selected_models = info.models.forward
-    parameter_scaling_type = info.optimization.run_options.parameter_scaling
-    tbl_params = info.optimization.parameter_table
-    param_to_index = getParameterIndices(selected_models, tbl_params)
-    models = updateModels(params, param_to_index, parameter_scaling_type, selected_models)
-    loc_forcing = run_helpers.space_forcing[site_index]
-    loc_spinup_forcing = run_helpers.space_spinup_forcing[site_index]
-    loc_forcing_t = run_helpers.loc_forcing_t
-    loc_output = getCacheFromOutput(run_helpers.space_output[site_index], info.hybrid.ml_gradient.method)
-    gradient_lib = info.hybrid.ml_gradient.method
-    loc_output_from_cache = getOutputFromCache(loc_output, params, gradient_lib)
-    land_init = deepcopy(run_helpers.loc_land)
-    tem_info = run_helpers.tem_info
-    loc_obs = run_helpers.space_observation[site_index]
-    loc_cost_option = prepCostOptions(loc_obs, info.optimization.cost_options)
-    constraint_method = info.optimization.run_options.multi_constraint_method
-    coreTEM!(
-        models,
-        loc_forcing,
-        loc_spinup_forcing,
-        loc_forcing_t,
-        loc_output_from_cache,
-        land_init,
-        tem_info)
-    forward_output = (; Pair.(getUniqueVarNames(info.output.variables), loc_output_from_cache)...)
-    loss_vector = SindbadTutorials.metricVector(loc_output_from_cache, loc_obs, loc_cost_option)
-    t_loss = combineMetric(loss_vector, constraint_method)
-    return forward_output, loss_vector, t_loss
 end
 
 function extract_site_series(output, var_name::Symbol)
@@ -169,20 +135,13 @@ function compare_model_structures(site_index=1)
     info_standard, forcing_standard, observations_standard =
         load_experiment(nothing, "CASA"); # use the same optimization file as written in experiment [json]
 
-    output_external, _, _ = run_model_param_sensitivity(
-        info_external,
-        forcing_external,
-        observations_external,
-        site_index,
-        info_external.optimization.parameter_table.default,
-    )
-    output_standard, _, _ = run_model_param_sensitivity(
-        info_standard,
-        forcing_standard,
-        observations_standard,
-        site_index,
-        info_standard.optimization.parameter_table.default,
-    )
+    # run the site with the default parameters of each model structure
+    run_helpers_external = prepTEM(info_external.models.forward, forcing_external, observations_external, info_external)
+    run_helpers_standard = prepTEM(info_standard.models.forward, forcing_standard, observations_standard, info_standard)
+    output_external = runSiteWithParams(run_helpers_external, info_external, site_index,
+        info_external.optimization.parameter_table.default).output
+    output_standard = runSiteWithParams(run_helpers_standard, info_standard, site_index,
+        info_standard.optimization.parameter_table.default).output
 
     xdata = collect(info_external.helpers.dates.range)
     site_name = forcing_external.data[1].site[site_index]
