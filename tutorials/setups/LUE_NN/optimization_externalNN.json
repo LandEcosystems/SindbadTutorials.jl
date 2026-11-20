@@ -109,7 +109,7 @@
           "source_unit": "adimensional",
           "source_variable": "NDVI_MCD43A"
         },
-        "model_full_var": "states.fAPAR_bare",
+        "model_full_var": "states.fAPAR_grid",
         "qflag": {
           "bounds": [0.85, 1.0],
           "data_path": null,
