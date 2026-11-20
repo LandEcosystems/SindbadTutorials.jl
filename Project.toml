@@ -1,7 +1,7 @@
 name = "SindbadTutorials"
 uuid = "7150cb7e-b54a-4419-adf4-a3c5c2a90a47"
-authors = ["dr-ko <skoirala@bgc-jena.mpg.de>"]
 version = "0.1.0"
+authors = ["dr-ko <skoirala@bgc-jena.mpg.de>"]
 
 [deps]
 AWS = "fbe9abb3-538b-5e4e-ba9e-bc94f4f92ebc"
@@ -11,6 +11,7 @@ BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 CMAEvolutionStrategy = "8d3b24bd-414e-49e0-94fb-163cc3a3e411"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Enzyme = "7da242da-08ed-463a-9acd-ee780be4f1d9"
 ErrorMetrics = "c324fbf6-076a-4da5-8ad2-21081a6b285c"
 FiniteDiff = "6a86dc24-6348-571c-b903-95158fe2bd41"
 FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
@@ -28,12 +29,16 @@ PreallocationTools = "d236fae5-4411-538c-8e31-a6e3d9e00b46"
 Preferences = "21216c6a-2e73-6563-6e65-726566657250"
 ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
 PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+Reactant = "3c362404-f566-11ee-1572-e11a4b42c853"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 Sindbad = "36c3e672-7dee-4606-99b5-7e5d8d85a313"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 TimeSamplers = "a27efc82-29b7-4223-84cd-12fc64c7a5bb"
 Zarr = "0a941bbe-ad1d-11e8-39d9-ab76183a1d99"
+
+[sources]
+Sindbad = {path = "dev/Sindbad.jl"}
 
 [compat]
 AWS = "1.97.1"
@@ -43,6 +48,7 @@ BenchmarkTools = "1.6.0"
 CMAEvolutionStrategy = "0.2.6"
 CairoMakie = "0.15.9"
 Dates = "1.11.0"
+Enzyme = "0.13.199"
 FiniteDiff = "2.29.0"
 FiniteDifferences = "0.12.33"
 Flux = "0.16.9"
@@ -58,6 +64,7 @@ PreallocationTools = "1.1.2"
 Preferences = "1.4.3"
 ProgressMeter = "1.11.0"
 PyCall = "1.96"
+Reactant = "0.2.278"
 Reexport = "1.2.2"
 Revise = "3.13.2"
 Statistics = "1.11.1"
