@@ -15,14 +15,13 @@
     }
   },
   "exe_rules": {
-    "input_array_type": "keyed_array",
-    "input_data_backend": "zarr",
     "land_output_type": "arrayFD",
     "longtuple_size": null,
     "model_array_type": "static_array",
     "model_number_type": "Float32",
     "parallelization": "threads",
     "tolerance": 1.0e-2,
+    "visualization_backend": "Plots",
     "yax_max_cache": 2e9
   },
   "flags": {
@@ -35,8 +34,7 @@
     "run_optimization": true,
     "save_info": true,
     "spinup_TEM": true,
-    "store_spinup": false,
-    "use_forward_diff": false
+    "store_spinup": false
   },
   "model_output": {
     "depth_dimensions": {
@@ -108,29 +106,26 @@
       "diagnostics.WUE": null
     }
   },
-  "model_spinup": {
-    "restart_file": null,
-    "sequence": [
-      {
-        "forcing": "all_years",
-        "n_repeat": 1,
-        "spinup_mode": "all_forward_models"
-      },
-      {
-        "forcing": "day_MSC",
-        "n_repeat": 1,
-        "spinup_mode": "all_forward_models"
-      },
-      {
-        "forcing": "first_year",
-        "n_repeat": 200,
-        "spinup_mode": "all_forward_models"
-      },
-      {
-        "forcing": "first_year",
-        "n_repeat": 1,
-        "spinup_mode": "eta_scale_AH"
-      }
-    ]
-  }
+  "spinup_sequence": [
+    {
+      "forcing": "all_years",
+      "n_repeat": 1,
+      "spinup_mode": "loop_TEM"
+    },
+    {
+      "forcing": "day_MSC",
+      "n_repeat": 1,
+      "spinup_mode": "loop_TEM"
+    },
+    {
+      "forcing": "first_year",
+      "n_repeat": 200,
+      "spinup_mode": "loop_TEM"
+    },
+    {
+      "forcing": "first_year",
+      "n_repeat": 1,
+      "spinup_mode": "eta_scale_AH"
+    }
+  ]
 }
