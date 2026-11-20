@@ -23,7 +23,7 @@
     "source_variable": null
   },
   "subset": {
-    "site": [1, 205]
+    "site": ["AR-SLu", "ZM-Mon"]
   },
   "variables": {
     "f_ambient_CO2": {

@@ -1,5 +1,5 @@
 
-export getSiteInfo, getSiteIndicesForHybrid,
+export getSiteInfo, getSiteNames, getSiteIndicesForHybrid,
 getSpinupSequenceSite, getSiteIndicesForPFT, getSiteIndicesForHybridML
 using SindbadTutorials
 
@@ -10,6 +10,17 @@ function getSiteInfo(site_index)
     domain = string(site_info[site_index][1])
     y_dist = string(site_info[site_index][2])
     return domain, y_dist
+end
+
+"""
+    getSiteNames(site_indices)
+
+Returns the names of the sites at the given positions of the site list. Sindbad subsets
+the `site` dimension by value, so `forcing.subset.site` needs these names, not indices.
+"""
+function getSiteNames(site_indices)
+    site_info = CSV.File(joinpath(@__DIR__, "../tutorials/setups/", "WROASTED_HB/site_names_disturbance.csv"); header=true)
+    return [string(site_info[i][1]) for i in site_indices]
 end
 
 function getSiteIndicesForHybrid(; exclude_sites=missing_sites_in_data)
@@ -39,22 +50,22 @@ function getSpinupSequenceSite(y_dist, begin_year; nrepeat=200)
     end
     if isnothing(nrepeat_d) || nrepeat_d < 0
         sequence = [
-            Dict("spinup_mode" => "sel_spinup_models", "forcing" => "all_years", "n_repeat" => 1),
-            Dict("spinup_mode" => "sel_spinup_models", "forcing" => "day_MSC", "n_repeat" => nrepeat),
+            Dict("spinup_mode" => "loop_TEM", "models" => "spinup", "forcing" => "all_years", "n_repeat" => 1),
+            Dict("spinup_mode" => "loop_TEM", "models" => "spinup", "forcing" => "day_MSC", "n_repeat" => nrepeat),
             Dict("spinup_mode" => "eta_scale_AHCWD", "forcing" => "day_MSC", "n_repeat" => 1),
         ]
     elseif nrepeat_d == 0
         sequence = [
-            Dict("spinup_mode" => "sel_spinup_models", "forcing" => "all_years", "n_repeat" => 1),
-            Dict("spinup_mode" => "sel_spinup_models", "forcing" => "day_MSC", "n_repeat" => nrepeat),
+            Dict("spinup_mode" => "loop_TEM", "models" => "spinup", "forcing" => "all_years", "n_repeat" => 1),
+            Dict("spinup_mode" => "loop_TEM", "models" => "spinup", "forcing" => "day_MSC", "n_repeat" => nrepeat),
             Dict("spinup_mode" => "eta_scale_A0HCWD", "forcing" => "day_MSC", "n_repeat" => 1),
         ]
     elseif nrepeat_d > 0
         sequence = [
-            Dict("spinup_mode" => "sel_spinup_models", "forcing" => "all_years", "n_repeat" => 1),
-            Dict("spinup_mode" => "sel_spinup_models", "forcing" => "day_MSC", "n_repeat" => nrepeat),
+            Dict("spinup_mode" => "loop_TEM", "models" => "spinup", "forcing" => "all_years", "n_repeat" => 1),
+            Dict("spinup_mode" => "loop_TEM", "models" => "spinup", "forcing" => "day_MSC", "n_repeat" => nrepeat),
             Dict("spinup_mode" => "eta_scale_A0HCWD", "forcing" => "day_MSC", "n_repeat" => 1),
-            Dict("spinup_mode" => "sel_spinup_models", "forcing" => "day_MSC", "n_repeat" => nrepeat_d),
+            Dict("spinup_mode" => "loop_TEM", "models" => "spinup", "forcing" => "day_MSC", "n_repeat" => nrepeat_d),
         ]
     else
         error("cannot determine the repeat for disturbance")
@@ -64,8 +75,8 @@ end
 
 function getSpinupSequenceSite(;nrepeat=5)
     sequence = [
-        Dict("spinup_mode" => "sel_spinup_models", "forcing" => "all_years", "n_repeat" => 1),
-        Dict("spinup_mode" => "sel_spinup_models", "forcing" => "day_MSC", "n_repeat" => nrepeat),
+        Dict("spinup_mode" => "loop_TEM", "models" => "spinup", "forcing" => "all_years", "n_repeat" => 1),
+        Dict("spinup_mode" => "loop_TEM", "models" => "spinup", "forcing" => "day_MSC", "n_repeat" => nrepeat),
     ]
     return sequence
 end
