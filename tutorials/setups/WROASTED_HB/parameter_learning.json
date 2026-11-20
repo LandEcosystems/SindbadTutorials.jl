@@ -45,6 +45,7 @@
   "replace_value_for_gradient": 0.0,
   "save_checkpoint": true,
   "covariates": {
+    "l_path": "../data/SindbadTutorialsData/CovariatesFLUXNET.zarr",
     "path": "https://s3.bgc-jena.mpg.de:9000/sindbad/CovariatesFLUXNET.zarr",
     "options": {
       "kind": "all"
