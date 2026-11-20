@@ -5,7 +5,7 @@ using Revise
 using SindbadTutorials
 using SindbadTutorials.Sindbad
 using SindbadTutorials.Sindbad.Setup.Dates
-using SindbadTutorials.Plots
+using Plots
 using SindbadTutorials.Sindbad.Visualization
 using CMAEvolutionStrategy
 toggle_type_abbrev_in_stacktrace()
@@ -36,37 +36,34 @@ replace_info = Dict("experiment.basics.time.date_begin" => "$(begin_year)-01-01"
     "experiment.basics.name" => experiment_name,
     "experiment.basics.time.date_end" => "$(end_year)-12-31",
     "experiment.flags.run_optimization" => run_optimization,
-    # "experiment.model_spinup.sequence" => spinup_sequence,
-    "forcing.subset.site" => [site_index],
+    # "experiment.spinup_sequence" => spinup_sequence,
+    "forcing.subset.site" => [domain],
     "experiment.model_output.path" => path_output,
     );
 
 # ================================== forward run ================================================== 
-# before running the optimization, check a forward run 
-@time out_dflt  = runExperimentForward(experiment_json; replace_info=deepcopy(replace_info)); # full default model
+# before running the optimization, check a forward run with the default parameters.
+# the run saves the output and plots the forcing and the simulated time series.
+@time out_dflt  = runExperimentForward(experiment_json; replace_info=deepcopy(replace_info));
 
 ## check the docs for output at: http://sindbad-mdi.org/pages/develop/hybrid_modeling.html and http://sindbad-mdi.org/pages/develop/sindbad_outputs.html
 
-# access some of the internals to do some plots with the forward runs...
-info            = getExperimentInfo(experiment_json; replace_info=deepcopy(replace_info)); # note that this will modify information from json with the replace_info
-forcing         = getForcing(info); 
-run_helpers     = prepTEM(forcing, info); # not needed now
+# a forward run does not read the observations, so read them to compare the default
+# simulations with the observations
+info            = getExperimentInfo(experiment_json; replace_info=deepcopy(replace_info));
+forcing         = getForcing(info);
 observations    = getObservation(info, forcing.helpers);
-obs_array       = [Array(_o) for _o in observations.data]; 
+obs_array       = [Array(_o) for _o in observations.data];
 cost_options    = prepCostOptions(obs_array, info.optimization.cost_options);
-
-# plot the default simulations
-plotTimeSeriesWithObs(out_dflt,obs_array,cost_options);
+plotTimeSeries((; info, forcing, observation=obs_array, output=out_dflt.output), cost_options);
 println("Outputs of plotting will be here: " * info.output.dirs.figure);
 
-# ================================== optimization ================================================= 
+# ================================== optimization =================================================
 # run the optimization according to the settings above... can take some time...
-@time out_opti  = runExperimentOpti(experiment_json; replace_info=deepcopy(replace_info), log_level=:info);
-
-# plot the results
-plotTimeSeriesWithObs(out_opti);
-plotTimeSeriesDebug(out_opti.info, out_opti.output.optimized, out_opti.output.default);
-println("Outputs of plotting will be here: " * info.output.dirs.figure);
+# the run plots the default and optimized simulations against the observations and
+# the performance histograms by itself
+@time out_opti  = runExperimentOpti(experiment_json; replace_info=deepcopy(replace_info), display_level=:info);
+println("Outputs of plotting will be here: " * out_opti.info.output.dirs.figure);
 
 # ================================== another model ================================================ 
 # all of the above with another model...
@@ -81,31 +78,24 @@ replace_info    = Dict("experiment.basics.time.date_begin" => "$(begin_year)-01-
     "experiment.basics.name" => experiment_name,
     "experiment.basics.time.date_end" => "$(end_year)-12-31",
     "experiment.flags.run_optimization" => run_optimization,
-    "experiment.model_spinup.sequence" => spinup_sequence,
-    "forcing.subset.site" => [site_index],
+    "experiment.spinup_sequence" => spinup_sequence,
+    "forcing.subset.site" => [domain],
     "experiment.model_output.path" => path_output,
     );
 
-# #=
-@time out_dflt_lue  = runExperimentForward(experiment_json; replace_info=deepcopy(replace_info)); # full default model
-# access some of the internals to do some plots with the forward runs...
-info            = getExperimentInfo(experiment_json; replace_info=deepcopy(replace_info)); # note that this will modify information from json with the replace_info
-forcing         = getForcing(info); 
-run_helpers     = prepTEM(forcing, info); # not needed now
-observations    = getObservation(info, forcing.helpers);
-obs_array       = [Array(_o) for _o in observations.data]; 
-cost_options    = prepCostOptions(obs_array, info.optimization.cost_options);
-# =#
+@time out_dflt_lue  = runExperimentForward(experiment_json; replace_info=deepcopy(replace_info));
 
-# plot the default simulations
-plotTimeSeriesWithObs(out_dflt_lue,obs_array,cost_options);
+# plot the default simulations against the observations
+info            = getExperimentInfo(experiment_json; replace_info=deepcopy(replace_info));
+forcing         = getForcing(info);
+observations    = getObservation(info, forcing.helpers);
+obs_array       = [Array(_o) for _o in observations.data];
+cost_options    = prepCostOptions(obs_array, info.optimization.cost_options);
+plotTimeSeries((; info, forcing, observation=obs_array, output=out_dflt_lue.output), cost_options);
 println("Outputs of plotting will be here: " * info.output.dirs.figure);
 
-# run the optimization
-@time out_lue_opti  = runExperimentOpti(experiment_json; replace_info=deepcopy(replace_info), log_level=:info);
-
-# plot the results
-plotTimeSeriesWithObs(out_lue_opti);
+# run the optimization, which makes its own plots
+@time out_lue_opti  = runExperimentOpti(experiment_json; replace_info=deepcopy(replace_info), display_level=:info);
 println("Outputs of plotting will be here: " * out_lue_opti.info.output.dirs.figure);
 
 # ================================== time for discussion ========================================== 
